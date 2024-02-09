@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:untitled/screens/add_movie.dart';
-import 'package:untitled/services/firebase_service.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Importa FirebaseAuth
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 
@@ -12,25 +12,32 @@ class MovieList extends StatefulWidget {
 class _MovieListState extends State<MovieList> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Movie List'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => AddMoviePage()),
-              );
-            },
-          )
-        ],
+    return WillPopScope(
+      onWillPop: () async {
+        await FirebaseAuth.instance.signOut(); // Cerrar sesión antes de salir
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Movie List'),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AddMoviePage()),
+                );
+              },
+            )
+          ],
+        ),
+        body: MovieListView(),
       ),
-      body: MovieListView(),
     );
   }
 }
+
 
 class MovieListView extends StatelessWidget {
   @override

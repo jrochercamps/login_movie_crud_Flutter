@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:untitled/services/firebase_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:untitled/screens/movie_list.dart';
-import 'package:untitled/screens/add_movie.dart';
-import 'package:untitled/screens/register_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+
+class RegisterScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -12,7 +13,7 @@ class LoginScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
+        title: Text('Registro'),
       ),
       body: Center(
         child: Column(
@@ -30,37 +31,26 @@ class LoginScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  // Iniciar sesión con email y contraseña
+                  // Registrar nuevo usuario con email y contraseña
                   UserCredential userCredential = await FirebaseAuth.instance
-                      .signInWithEmailAndPassword(
+                      .createUserWithEmailAndPassword(
                     email: emailController.text,
                     password: passwordController.text,
                   );
 
-                  print('Usuario autenticado: ${userCredential.user!.uid}');
+                  print('Nuevo usuario registrado: ${userCredential.user!.uid}');
 
-                  // Navegar a la pantalla de lista de películas
+                  // Navegar a la Segunda Pantalla después del registro
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => MovieList()),
                   );
                 } on FirebaseAuthException catch (e) {
-                  print('Error de inicio de sesión: $e');
-                  // Manejar errores de inicio de sesión, por ejemplo, mostrar un mensaje al usuario
+                  print('Error de registro: $e');
+                  // Manejar errores de registro, por ejemplo, mostrar un mensaje al usuario
                 }
               },
-              child: Text('Iniciar Sesión'),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Navegar a la pantalla de registro
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => RegisterScreen()),
-                );
-              },
-              child: Text('Crear una cuenta'),
+              child: Text('Registrarse'),
             ),
           ],
         ),
